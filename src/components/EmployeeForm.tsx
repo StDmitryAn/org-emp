@@ -27,12 +27,13 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, initialValue
             } else {
                 dispatch(addEmployee({ ...values, id: Date.now().toString() }));
             }
+            formik.resetForm(); // Сброс формы
             onClose();
         },
     });
 
     return (
-        <Modal open={open} onClose={onClose}>
+        <Modal open={open} onClose={() => { formik.resetForm(); onClose(); }}>
             <Box component="form" onSubmit={formik.handleSubmit} sx={{ p: 4, bgcolor: 'background.paper', margin: 'auto', maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <TextField
                     fullWidth
