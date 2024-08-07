@@ -5,10 +5,15 @@ import { Button } from '@mui/material';
 
 const OrganizationsPage: React.FC = () => {
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const [editingOrg, setEditingOrg] = useState(null);
+    const [editingOrg, setEditingOrg] = useState<{ id: string; name: string } | null>(null);
 
     const handleAddClick = () => {
         setEditingOrg(null);
+        setIsFormOpen(true);
+    };
+
+    const handleEditClick = (organization: { id: string; name: string }) => {
+        setEditingOrg(organization);
         setIsFormOpen(true);
     };
 
@@ -20,11 +25,11 @@ const OrganizationsPage: React.FC = () => {
         <div>
             <h1>Organizations</h1>
             <Button variant="contained" onClick={handleAddClick}>Add Organization</Button>
-            <OrganizationList />
+            <OrganizationList onEdit={handleEditClick} />
             <OrganizationForm
                 open={isFormOpen}
                 onClose={handleCloseForm}
-                initialValues={{ id: '', name: '' }}
+                initialValues={editingOrg || { id: '', name: '' }}
                 isEditing={!!editingOrg}
             />
         </div>

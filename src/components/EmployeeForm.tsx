@@ -17,6 +17,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, initialValue
 
     const formik = useFormik({
         initialValues,
+        enableReinitialize: true,
         validationSchema: Yup.object({
             name: Yup.string().required('Name is required'),
             position: Yup.string().required('Position is required'),
@@ -27,7 +28,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, initialValue
             } else {
                 dispatch(addEmployee({ ...values, id: Date.now().toString() }));
             }
-            formik.resetForm(); // Сброс формы
+            formik.resetForm();
             onClose();
         },
     });

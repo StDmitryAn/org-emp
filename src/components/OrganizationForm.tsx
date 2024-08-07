@@ -17,6 +17,7 @@ const OrganizationForm: React.FC<OrganizationFormProps> = ({ open, onClose, init
 
     const formik = useFormik({
         initialValues,
+        enableReinitialize: true,
         validationSchema: Yup.object({
             name: Yup.string().required('Name is required'),
         }),
@@ -26,7 +27,7 @@ const OrganizationForm: React.FC<OrganizationFormProps> = ({ open, onClose, init
             } else {
                 dispatch(addOrganization({ ...values, id: Date.now().toString() }));
             }
-            formik.resetForm(); // Сброс формы
+            formik.resetForm();
             onClose();
         },
     });

@@ -7,10 +7,15 @@ import { Button, Box } from '@mui/material';
 const EmployeesPage: React.FC = () => {
     const { organizationId } = useParams<{ organizationId: string }>();
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const [editingEmp, setEditingEmp] = useState(null);
+    const [editingEmp, setEditingEmp] = useState<{ id: string; name: string; position: string; organizationId: string } | null>(null);
 
     const handleAddClick = () => {
         setEditingEmp(null);
+        setIsFormOpen(true);
+    };
+
+    const handleEditClick = (employee: { id: string; name: string; position: string; organizationId: string }) => {
+        setEditingEmp(employee);
         setIsFormOpen(true);
     };
 
@@ -25,11 +30,11 @@ const EmployeesPage: React.FC = () => {
                 <Button variant="contained" onClick={handleAddClick}>Add Employee</Button>
                 <Button variant="outlined" component={Link} to="/">Back to Organizations</Button>
             </Box>
-            <EmployeeList organizationId={organizationId!} />
+            <EmployeeList organizationId={organizationId!} onEdit={handleEditClick} />
             <EmployeeForm
                 open={isFormOpen}
                 onClose={handleCloseForm}
-                initialValues={{ id: '', name: '', position: '', organizationId: organizationId! }}
+                initialValues={editingEmp || { id: '', name: '', position: '', organizationId: organizationId! }}
                 isEditing={!!editingEmp}
             />
         </div>
