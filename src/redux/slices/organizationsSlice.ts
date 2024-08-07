@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Organization } from '../../types/Organization';
-import { loadFromLocalStorage, saveToLocalStorage } from '../../utils/localStorageUtils';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {Organization} from '../../types/Organization';
+import {loadFromLocalStorage, saveToLocalStorage} from '../../utils/localStorageUtils';
 
 export interface OrganizationsState {
     organizations: Organization[];
@@ -32,5 +32,5 @@ const organizationsSlice = createSlice({
     },
 });
 
-export const { addOrganization, editOrganization, deleteOrganization } = organizationsSlice.actions;
+export const {addOrganization, editOrganization, deleteOrganization} = organizationsSlice.actions;
 export default organizationsSlice.reducer;

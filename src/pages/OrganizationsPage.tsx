@@ -1,35 +1,36 @@
-import React, { useState } from 'react';
+import React, {useCallback, useState} from 'react';
 import OrganizationList from '../components/OrganizationList';
 import OrganizationForm from '../components/OrganizationForm';
-import { Button } from '@mui/material';
+import {Button} from '@mui/material';
+import {Organization} from '../types/Organization';
 
 const OrganizationsPage: React.FC = () => {
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const [editingOrg, setEditingOrg] = useState<{ id: string; name: string } | null>(null);
+    const [editingOrg, setEditingOrg] = useState<Organization | null>(null);
 
-    const handleAddClick = () => {
+    const handleAddClick = useCallback(() => {
         setEditingOrg(null);
         setIsFormOpen(true);
-    };
+    }, []);
 
-    const handleEditClick = (organization: { id: string; name: string }) => {
+    const handleEditClick = useCallback((organization: Organization) => {
         setEditingOrg(organization);
         setIsFormOpen(true);
-    };
+    }, []);
 
-    const handleCloseForm = () => {
+    const handleCloseForm = useCallback(() => {
         setIsFormOpen(false);
-    };
+    }, []);
 
     return (
         <div>
             <h1>Organizations</h1>
             <Button variant="contained" onClick={handleAddClick}>Add Organization</Button>
-            <OrganizationList onEdit={handleEditClick} />
+            <OrganizationList onEdit={handleEditClick}/>
             <OrganizationForm
                 open={isFormOpen}
                 onClose={handleCloseForm}
-                initialValues={editingOrg || { id: '', name: '' }}
+                initialValues={editingOrg || {id: '', name: ''}}
                 isEditing={!!editingOrg}
             />
         </div>

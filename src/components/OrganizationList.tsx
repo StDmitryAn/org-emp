@@ -1,19 +1,20 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../redux/store';
+import { useTypedDispatch, useTypedSelector } from '../redux/store';
 import { deleteOrganization } from '../redux/slices/organizationsSlice';
 import { Button, List, ListItem, ListItemText, IconButton, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { Organization } from '../types/Organization';
+import { selectAllOrganizations } from '../redux/selectors/organizationsSelectors';
 
 interface OrganizationListProps {
-    onEdit: (organization: { id: string; name: string }) => void;
+    onEdit: (organization: Organization) => void;
 }
 
 const OrganizationList: React.FC<OrganizationListProps> = ({ onEdit }) => {
-    const organizations = useSelector((state: RootState) => state.organizations.organizations);
-    const dispatch = useDispatch();
+    const organizations = useTypedSelector(selectAllOrganizations);
+    const dispatch = useTypedDispatch();
 
     const handleDelete = (id: string) => {
         dispatch(deleteOrganization(id));
@@ -21,13 +22,13 @@ const OrganizationList: React.FC<OrganizationListProps> = ({ onEdit }) => {
 
     return (
         <List>
-            {organizations.map(org => (
-                <ListItem key={org.id}>
-                    <ListItemText primary={org.name} />
+            {organizations.map(organization => (
+                <ListItem key={organization.id}>
+                    <ListItemText primary={organization.name} />
                     <Box display="flex" gap={2}>
-                        <Button component={Link} to={`/employees/${org.id}`}>View Employees</Button>
-                        <IconButton onClick={() => onEdit(org)}><EditIcon /></IconButton>
-                        <IconButton onClick={() => handleDelete(org.id)}><DeleteIcon /></IconButton>
+                        <Button component={Link} to={`/employees/${organization.id}`}>View Employees</Button>
+                        <IconButton onClick={() => onEdit(organization)}><EditIcon /></IconButton>
+                        <IconButton onClick={() => handleDelete(organization.id)}><DeleteIcon /></IconButton>
                     </Box>
                 </ListItem>
             ))}

@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, {useCallback, useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
 import EmployeeList from '../components/EmployeeList';
 import EmployeeForm from '../components/EmployeeForm';
-import { Button, Box } from '@mui/material';
+import {Box, Button} from '@mui/material';
+import {Employee} from '../types/Employee';
 
 const EmployeesPage: React.FC = () => {
-    const { organizationId } = useParams<{ organizationId: string }>();
+    const {id} = useParams<{ id: string }>();
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const [editingEmp, setEditingEmp] = useState<{ id: string; name: string; position: string; organizationId: string } | null>(null);
+    const [editingEmp, setEditingEmp] = useState<Employee | null>(null);
 
-    const handleAddClick = () => {
+    const handleAddClick = useCallback(() => {
         setEditingEmp(null);
         setIsFormOpen(true);
-    };
+    }, []);
 
-    const handleEditClick = (employee: { id: string; name: string; position: string; organizationId: string }) => {
+    const handleEditClick = useCallback((employee: Employee) => {
         setEditingEmp(employee);
         setIsFormOpen(true);
-    };
+    }, []);
 
-    const handleCloseForm = () => {
+    const handleCloseForm = useCallback(() => {
         setIsFormOpen(false);
-    };
+    }, []);
 
     return (
         <div>
@@ -30,11 +31,11 @@ const EmployeesPage: React.FC = () => {
                 <Button variant="contained" onClick={handleAddClick}>Add Employee</Button>
                 <Button variant="outlined" component={Link} to="/">Back to Organizations</Button>
             </Box>
-            <EmployeeList organizationId={organizationId!} onEdit={handleEditClick} />
+            <EmployeeList organizationId={id!} onEdit={handleEditClick}/>
             <EmployeeForm
                 open={isFormOpen}
                 onClose={handleCloseForm}
-                initialValues={editingEmp || { id: '', name: '', position: '', organizationId: organizationId! }}
+                initialValues={editingEmp || {id: '', name: '', position: '', organizationId: id!}}
                 isEditing={!!editingEmp}
             />
         </div>

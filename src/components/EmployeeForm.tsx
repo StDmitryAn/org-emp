@@ -1,41 +1,60 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { addEmployee, editEmployee } from '../redux/slices/employeesSlice';
 import { Modal, Box, TextField, Button } from '@mui/material';
+import { Employee } from '../types/Employee';
+import { employeeValidationSchema } from '../validation/employeeValidationSchema';
+import { makeStyles } from 'tss-react/mui';
 
 interface EmployeeFormProps {
     open: boolean;
     onClose: () => void;
-    initialValues: { id: string; name: string; position: string; organizationId: string };
+    initialValues: Employee;
     isEditing: boolean;
 }
 
+const useStyles = makeStyles()(() => ({
+    form: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        padding: '32px',
+        backgroundColor: 'white',
+        maxWidth: '400px',
+        margin: 'auto',
+    },
+}));
+
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, initialValues, isEditing }) => {
     const dispatch = useDispatch();
+    const { classes } = useStyles();
+
+    const handleSubmit = useCallback((values: Employee) => {
+        if (isEditing) {
+            dispatch(editEmployee(values));
+        } else {
+            dispatch(addEmployee({ ...values, id: Date.now().toString() }));
+        }
+        formik.resetForm(); // Сброс формы
+        onClose();
+    }, [dispatch, isEditing, onClose]);
 
     const formik = useFormik({
         initialValues,
-        enableReinitialize: true,
-        validationSchema: Yup.object({
-            name: Yup.string().required('Name is required'),
-            position: Yup.string().required('Position is required'),
-        }),
-        onSubmit: (values) => {
-            if (isEditing) {
-                dispatch(editEmployee(values));
-            } else {
-                dispatch(addEmployee({ ...values, id: Date.now().toString() }));
-            }
-            formik.resetForm();
-            onClose();
-        },
+        enableReinitialize: true, // Позволяет перезагружать начальные значения
+        validationSchema: employeeValidationSchema,
+        onSubmit: handleSubmit,
     });
 
+    const handleModalClose = useCallback(() => {
+        formik.resetForm();
+        onClose();
+    }, [formik, onClose]);
+
     return (
-        <Modal open={open} onClose={() => { formik.resetForm(); onClose(); }}>
-            <Box component="form" onSubmit={formik.handleSubmit} sx={{ p: 4, bgcolor: 'background.paper', margin: 'auto', maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Modal open={open} onClose={handleModalClose}>
+            <Box component="form" onSubmit={formik.handleSubmit} className={classes.form}>
                 <TextField
                     fullWidth
                     id="name"
